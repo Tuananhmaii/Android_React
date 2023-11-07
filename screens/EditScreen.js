@@ -37,8 +37,36 @@ const EditScreen = ({ navigation, route }) => {
       return;
     }
 
-    await Database.updateHike(hike.id, name, date.toDateString(), location, availablePark, length, weather, teamSize, difficulty, description);
-    navigation.goBack();
+    const hikeInfo = `
+    Name: ${name}
+    Date: ${date.toDateString()}
+    Location: ${location}
+    Available park: ${availablePark}
+    Length: ${length}
+    Difficulty: ${difficulty}
+    Weather: ${weather}
+    Team Size: ${teamSize}
+    Description: ${description}
+  `;
+    Alert.alert(
+      "Update Hike",
+      hikeInfo,
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Canceled"), // You can navigate back to the screen here
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            Database.updateHike(hike.id, name, date.toDateString(), location, availablePark, length, weather, teamSize, difficulty, description);
+            navigation.goBack();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const onChange = (event, selectedDate) => {

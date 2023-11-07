@@ -34,8 +34,36 @@ const AddScreen = ({ navigation }) => {
       return;
     }
 
-    await Database.addHike(name, date.toDateString(), location, availablePark, length, weather, teamSize, difficulty, description);
-    navigation.goBack();
+    const hikeInfo = `
+    Name: ${name}
+    Date: ${date.toDateString()}
+    Location: ${location}
+    Available park: ${availablePark}
+    Length: ${length}
+    Difficulty: ${difficulty}
+    Weather: ${weather}
+    Team Size: ${teamSize}
+    Description: ${description}
+  `;
+    Alert.alert(
+      "Add Hike",
+      hikeInfo,
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Canceled"), // You can navigate back to the screen here
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            Database.addHike(name, date.toDateString(), location, availablePark, length, weather, teamSize, difficulty, description);
+            navigation.goBack();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const onChange = (event, selectedDate) => {
@@ -67,19 +95,18 @@ const AddScreen = ({ navigation }) => {
       <Text style={styles.label}>Date:</Text>
       <Pressable onPress={() => setShowPicker(true)}>
         <View pointerEvents="none">
-
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Location"
-          value={date.toDateString()}
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Location"
+            value={date.toDateString()}
+          />
         </View>
       </Pressable>
       {showPicker && (
         <DateTimePicker
           testID="dateTimePicker"
           value={date}
-          mode="date" 
+          mode="date"
           is24Hour={true}
           display="default"
           onChange={onChange}
@@ -101,12 +128,12 @@ const AddScreen = ({ navigation }) => {
         <Picker.Item label="Yes" value="Yes" />
         <Picker.Item label="No" value="No" />
       </Picker>
-      <Text style={styles.label}>Length:</Text>
+      <Text style={styles.label}>Length (meters):</Text>
       <TextInput
         style={styles.input}
         value={length}
         onChangeText={handleLengthChange}
-        placeholder="Enter length"
+        placeholder="Enter Length"
         keyboardType="numeric"
       />
       <Text style={styles.label}>Weather:</Text>
@@ -122,7 +149,7 @@ const AddScreen = ({ navigation }) => {
         style={styles.input}
         value={teamSize}
         onChangeText={handleTeamSizeChange}
-        placeholder="Enter team size"
+        placeholder="Enter Team Size"
         keyboardType="numeric"
       />
       <Text style={styles.label}>Difficulty:</Text>
@@ -141,13 +168,14 @@ const AddScreen = ({ navigation }) => {
         value={description}
         onChangeText={setDescription}
         placeholder="Enter Description"
+        multiline
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddHike}>
         <Text style={styles.addButtonText}>Add Hike</Text>
       </TouchableOpacity>
     </ScrollView>
   );
-};
+};  
 
 const styles = StyleSheet.create({
   container: {
